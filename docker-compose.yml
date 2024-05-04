@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  osticket:
+    image: tiredofit/osticket
+    ports:
+      - "8100:80"  # Expose osTicket on port 8080 of the host
+    depends_on:
+      - osticketdb
+    environment:
+      - ZABBIX_HOSTNAME=osticket-app
+      - DB_HOST=osticketdb
+      - DB_NAME=osticket
+      - DB_USER=osticket_user
+      - DB_PASS=MY_DB_PASSWORD
+      - ADMIN_EMAIL=admin@example.com
+      - ADMIN_USER=Administrator
+      - ADMIN_PASS=Password123!
+      - ADMIN_FIRSTNAME=Admin
+      - ADMIN_LASTNAME=User
+      - INSTALL_SECRET=BIG_LONG_SECRET_STRING
+      - INSTALL_EMAIL=admin@example.com
+      - INSTALL_NAME="My Ticketing Ssytem"
+    restart: always
+
+  osticketdb:
+    image: mariadb:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=MY_ROOT_PASSWORD
+      - MYSQL_DATABASE=osticket
+      - MYSQL_USER=osticket_user
+      - MYSQL_PASSWORD=MY_DB_PASSWORD
+    volumes:
+      - osticket_db_data:/var/lib/mysql
+    restart: always
+
+volumes:
+  osticket_db_data:
